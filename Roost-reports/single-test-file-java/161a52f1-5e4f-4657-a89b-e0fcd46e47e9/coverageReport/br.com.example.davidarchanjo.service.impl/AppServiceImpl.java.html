@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-crud-rest</a> &gt; <a href="index.source.html" class="el_package">br.com.example.davidarchanjo.service.impl</a> &gt; <span class="el_source">AppServiceImpl.java</span></div><h1>AppServiceImpl.java</h1><pre class="source lang-java linenums">package br.com.example.davidarchanjo.service.impl;
+
+import br.com.example.davidarchanjo.builder.AppBuilder;
+import br.com.example.davidarchanjo.exception.AppNotFoundException;
+import br.com.example.davidarchanjo.model.domain.App;
+import br.com.example.davidarchanjo.model.dto.AppDTO;
+import br.com.example.davidarchanjo.repository.AppRepository;
+import br.com.example.davidarchanjo.service.AppService;
+import com.github.javafaker.Faker;
+import lombok.AllArgsConstructor;
+import lombok.val;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+@Service
+<span class="nc" id="L22">@AllArgsConstructor</span>
+public class AppServiceImpl implements AppService {
+
+    private final AppRepository repository;
+    private final AppBuilder builder;
+
+    @Override
+    public Long createNewApp(AppDTO dto) {
+<span class="nc" id="L30">        return Stream.of(dto)</span>
+<span class="nc" id="L31">            .map(builder::build)</span>
+<span class="nc" id="L32">            .map(repository::save)</span>
+<span class="nc" id="L33">            .map(App::getId)</span>
+<span class="nc" id="L34">            .findFirst()</span>
+<span class="nc" id="L35">            .get();</span>
+    }
+
+    @Override
+    public List&lt;Optional&lt;AppDTO&gt;&gt; getAllApps() {
+<span class="nc" id="L40">        return repository.findAll()</span>
+<span class="nc" id="L41">            .stream()</span>
+<span class="nc" id="L42">            .map(builder::build)</span>
+<span class="nc" id="L43">            .collect(Collectors.toList());</span>
+    }
+
+    @Override
+    public Optional&lt;AppDTO&gt; getAppById(Long id) {
+<span class="nc" id="L48">        return repository.findById(id)</span>
+<span class="nc" id="L49">            .map(builder::build)</span>
+<span class="nc" id="L50">            .orElseThrow(() -&gt; new AppNotFoundException(String.format(&quot;No such App for id '%s'&quot;, id)));</span>
+    }
+
+    @Transactional
+    @Override
+    public Optional&lt;AppDTO&gt; updateApp(Long id, AppDTO dto) {
+<span class="nc" id="L56">        return repository.findById(id)</span>
+<span class="nc" id="L57">            .map(model -&gt; builder.build(dto, model))</span>
+<span class="nc" id="L58">            .map(repository::save)</span>
+<span class="nc" id="L59">            .map(builder::build)</span>
+<span class="nc" id="L60">            .orElseThrow(() -&gt; new AppNotFoundException(String.format(&quot;No such App for id '%s'&quot;, id)));</span>
+    }
+
+    @Override
+    public void deleteAppById(Long id) {
+<span class="nc" id="L65">        repository.deleteById(id);</span>
+<span class="nc" id="L66">    }</span>
+
+    @Override
+    public void populate() {
+<span class="nc" id="L70">        val faker = new Faker();</span>
+<span class="nc" id="L71">        IntStream.range(0, 100).forEach(i -&gt; {</span>
+<span class="nc" id="L72">            App app = App.builder()</span>
+<span class="nc" id="L73">                .author(faker.app().author())</span>
+<span class="nc" id="L74">                .name(faker.app().name())</span>
+<span class="nc" id="L75">                .version(faker.app().version())</span>
+<span class="nc" id="L76">                .build();</span>
+
+<span class="nc" id="L78">            repository.save(app);</span>
+<span class="nc" id="L79">        });</span>
+<span class="nc" id="L80">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
