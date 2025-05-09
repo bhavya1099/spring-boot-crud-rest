@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-crud-rest</a> &gt; <a href="index.source.html" class="el_package">br.com.example.davidarchanjo.service.impl</a> &gt; <span class="el_source">AppServiceImpl.java</span></div><h1>AppServiceImpl.java</h1><pre class="source lang-java linenums">package br.com.example.davidarchanjo.service.impl;
+
+import br.com.example.davidarchanjo.builder.AppBuilder;
+import br.com.example.davidarchanjo.exception.AppNotFoundException;
+import br.com.example.davidarchanjo.model.domain.App;
+import br.com.example.davidarchanjo.model.dto.AppDTO;
+import br.com.example.davidarchanjo.repository.AppRepository;
+import br.com.example.davidarchanjo.service.AppService;
+import com.github.javafaker.Faker;
+import lombok.AllArgsConstructor;
+import lombok.val;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+@Service
+<span class="fc" id="L22">@AllArgsConstructor</span>
+public class AppServiceImpl implements AppService {
+
+	private final AppRepository repository;
+
+	private final AppBuilder builder;
+
+	@Override
+	public Long createNewApp(AppDTO dto) {
+<span class="fc" id="L31">		return Stream.of(dto).map(builder::build).map(repository::save).map(App::getId).findFirst().get();</span>
+	}
+
+	@Override
+	public List&lt;Optional&lt;AppDTO&gt;&gt; getAllApps() {
+<span class="fc" id="L36">		return repository.findAll().stream().map(builder::build).collect(Collectors.toList());</span>
+	}
+
+	@Override
+	public Optional&lt;AppDTO&gt; getAppById(Long id) {
+<span class="fc" id="L41">		return repository.findById(id)</span>
+<span class="fc" id="L42">			.map(builder::build)</span>
+<span class="fc" id="L43">			.orElseThrow(() -&gt; new AppNotFoundException(String.format(&quot;No such App for id '%s'&quot;, id)));</span>
+	}
+
+	@Transactional
+	@Override
+	public Optional&lt;AppDTO&gt; updateApp(Long id, AppDTO dto) {
+<span class="fc" id="L49">		return repository.findById(id)</span>
+<span class="fc" id="L50">			.map(model -&gt; builder.build(dto, model))</span>
+<span class="fc" id="L51">			.map(repository::save)</span>
+<span class="fc" id="L52">			.map(builder::build)</span>
+<span class="pc" id="L53">			.orElseThrow(() -&gt; new AppNotFoundException(String.format(&quot;No such App for id '%s'&quot;, id)));</span>
+	}
+
+	@Override
+	public void deleteAppById(Long id) {
+<span class="fc" id="L58">		repository.deleteById(id);</span>
+<span class="fc" id="L59">	}</span>
+
+	@Override
+	public void populate() {
+<span class="fc" id="L63">		val faker = new Faker();</span>
+<span class="fc" id="L64">		IntStream.range(0, 100).forEach(i -&gt; {</span>
+<span class="fc" id="L65">			App app = App.builder()</span>
+<span class="fc" id="L66">				.author(faker.app().author())</span>
+<span class="fc" id="L67">				.name(faker.app().name())</span>
+<span class="fc" id="L68">				.version(faker.app().version())</span>
+<span class="fc" id="L69">				.build();</span>
+
+<span class="fc" id="L71">			repository.save(app);</span>
+<span class="fc" id="L72">		});</span>
+<span class="fc" id="L73">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

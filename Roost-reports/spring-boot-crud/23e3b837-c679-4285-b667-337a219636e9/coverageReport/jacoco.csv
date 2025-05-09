@@ -1,0 +1,11 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+spring-boot-crud-rest,br.com.example.davidarchanjo.service.impl,AppServiceImpl,12,145,0,0,0,23,1,10,1,10
+spring-boot-crud-rest,br.com.example.davidarchanjo.model.dto,AppDTO,95,90,20,10,0,11,16,12,2,11
+spring-boot-crud-rest,br.com.example.davidarchanjo.model.dto,AppDTO.AppDTOBuilder,22,28,0,0,0,1,1,5,1,5
+spring-boot-crud-rest,br.com.example.davidarchanjo.exception,AppNotFoundException,0,4,0,0,0,2,0,1,0,1
+spring-boot-crud-rest,br.com.example.davidarchanjo.config,AppConfig,0,14,0,0,0,4,0,2,0,2
+spring-boot-crud-rest,br.com.example.davidarchanjo.model.domain,App,121,110,26,12,0,13,20,14,2,13
+spring-boot-crud-rest,br.com.example.davidarchanjo.model.domain,App.AppBuilder,32,30,0,0,0,1,2,5,2,5
+spring-boot-crud-rest,br.com.example.davidarchanjo.controller,AppController,0,63,0,0,0,12,0,6,0,6
+spring-boot-crud-rest,br.com.example.davidarchanjo.builder,AppBuilder,0,32,0,0,0,7,0,4,0,4
+spring-boot-crud-rest,br.com.example.davidarchanjo.application,CRUDRestApplication,5,7,0,0,2,3,1,2,1,2

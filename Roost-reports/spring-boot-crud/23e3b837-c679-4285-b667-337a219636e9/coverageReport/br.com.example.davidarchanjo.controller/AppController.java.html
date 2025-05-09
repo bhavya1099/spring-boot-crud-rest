@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-crud-rest</a> &gt; <a href="index.source.html" class="el_package">br.com.example.davidarchanjo.controller</a> &gt; <span class="el_source">AppController.java</span></div><h1>AppController.java</h1><pre class="source lang-java linenums">package br.com.example.davidarchanjo.controller;
+
+import br.com.example.davidarchanjo.model.dto.AppDTO;
+import br.com.example.davidarchanjo.service.AppService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.validation.Valid;
+
+@RestController
+<span class="fc" id="L16">@AllArgsConstructor</span>
+@RequestMapping(&quot;/api/v1/apps&quot;)
+public class AppController {
+
+	private final AppService service;
+
+	@PostMapping
+	public ResponseEntity&lt;?&gt; create(@Valid @RequestBody AppDTO dto, UriComponentsBuilder uriComponentsBuilder) {
+<span class="fc" id="L24">		Long appId = service.createNewApp(dto);</span>
+<span class="fc" id="L25">		UriComponents uriComponents = uriComponentsBuilder.path(&quot;/api/v1/apps/{id}&quot;).buildAndExpand(appId);</span>
+
+<span class="fc" id="L27">		HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L28">		headers.setLocation(uriComponents.toUri());</span>
+
+<span class="fc" id="L30">		return new ResponseEntity&lt;&gt;(headers, HttpStatus.CREATED);</span>
+	}
+
+	@GetMapping
+	public ResponseEntity&lt;?&gt; getAll() {
+<span class="fc" id="L35">		return ResponseEntity.ok(service.getAllApps());</span>
+	}
+
+	@GetMapping(&quot;/{id}&quot;)
+	public ResponseEntity&lt;?&gt; findById(@PathVariable Long id) {
+<span class="fc" id="L40">		return ResponseEntity.ok(service.getAppById(id));</span>
+	}
+
+	@PutMapping(&quot;/{id}&quot;)
+	public ResponseEntity&lt;?&gt; update(@PathVariable Long id, @Valid @RequestBody AppDTO dto) {
+<span class="fc" id="L45">		service.updateApp(id, dto);</span>
+<span class="fc" id="L46">		return ResponseEntity.noContent().build();</span>
+	}
+
+	@DeleteMapping(&quot;/{id}&quot;)
+	public ResponseEntity&lt;?&gt; delete(@PathVariable Long id) {
+<span class="fc" id="L51">		service.deleteAppById(id);</span>
+<span class="fc" id="L52">		return ResponseEntity.ok().build();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
